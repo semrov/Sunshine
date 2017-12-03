@@ -81,7 +81,7 @@ public class MainActivity extends AppCompatActivity {
             View rootView = inflater.inflate(R.layout.fragment_main,container,false);
             ListView listView = rootView.findViewById(R.id.listview_forecast);
             listView.setAdapter(mForecastAdapter);
-            return inflater.inflate(R.layout.fragment_main,container,false);
+            return rootView;
         }
     }
 }
