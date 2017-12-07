@@ -3,8 +3,12 @@ package com.semrov.jure.sunshine;
 import android.app.Fragment;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
@@ -30,6 +34,13 @@ public class ForecastFragment extends Fragment
     public ForecastFragment(){ }
 
     @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        //this  fragment handles menu events
+        setHasOptionsMenu(true);
+    }
+
+    @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
 
@@ -44,13 +55,29 @@ public class ForecastFragment extends Fragment
                 "Sun 6/29 - Sunny - 20/7"
         };
 
-
         List<String> weekForecast = new ArrayList<>(Arrays.asList(data));
         mForecastAdapter = new ArrayAdapter<String>(getActivity(),R.layout.list_item_forecast,R.id.list_item_forecast_textview,weekForecast);
         View rootView = inflater.inflate(R.layout.fragment_main,container,false);
         ListView listView = rootView.findViewById(R.id.listview_forecast);
         listView.setAdapter(mForecastAdapter);
         return rootView;
+    }
+
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        inflater.inflate(R.menu.forecastfragment,menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId())
+        {
+            case R.id.action_refresh:
+            {
+                return true;
+            }
+        }
+        return super.onOptionsItemSelected(item);
     }
 
     public class FetchWeatherTask extends AsyncTask<Void,Void,Void>
