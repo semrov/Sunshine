@@ -8,7 +8,7 @@ import android.view.MenuItem;
 
 public class MainActivity extends AppCompatActivity {
 
-    public static final String APPID = "ccdb30e5915364ec2380ab284e3ada58";
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

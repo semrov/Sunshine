@@ -1,6 +1,7 @@
 package com.semrov.jure.sunshine;
 
 import android.app.Fragment;
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -74,22 +75,26 @@ public class ForecastFragment extends Fragment
         {
             case R.id.action_refresh:
             {
+                FetchWeatherTask fetchWeatherTask = new FetchWeatherTask();
+                fetchWeatherTask.execute("Logatec");
                 return true;
             }
         }
         return super.onOptionsItemSelected(item);
     }
 
-    public class FetchWeatherTask extends AsyncTask<Void,Void,Void>
+    public class FetchWeatherTask extends AsyncTask<String,Void,Void>
     {
         private final String LOG_TAG = FetchWeatherTask.class.getName();
 
         @Override
-        protected Void doInBackground(Void... voids) {
+        protected Void doInBackground(String... params) {
             // These two need to be declared outside the try/catch
             // so that they can be closed in the finally block.
             HttpURLConnection urlConnection = null;
             BufferedReader reader = null;
+
+            //Uri uriBuilder = new Uri.parse(WeatherUrlConstants.BASE_URL);
 
             // Will contain the raw JSON response as a string.
             String forecastJsonStr = null;
@@ -98,7 +103,17 @@ public class ForecastFragment extends Fragment
                 // Construct the URL for the OpenWeatherMap query
                 // Possible parameters are avaiable at OWM's forecast API page, at
                 // http://openweathermap.org/API#forecast
-                URL url = new URL("http://api.openweathermap.org/data/2.5/forecast?q=Logatec&appid=ccdb30e5915364ec2380ab284e3ada58&units=metric");
+                Uri buildURI = Uri.parse(WeatherUrlConstants.BASE_URL)
+                        .buildUpon()
+                        .appendQueryParameter(WeatherUrlConstants.QUERY_PARAM,params[0])
+                        .appendQueryParameter(WeatherUrlConstants.UNITS_PARAM,"metric")
+                        .appendQueryParameter(WeatherUrlConstants.FORMAT_PARAM,"json")
+                        .appendQueryParameter(WeatherUrlConstants.APPID_PARAM,WeatherUrlConstants.APPID)
+                        .build();
+
+                Log.v(LOG_TAG,buildURI.toString());
+
+                URL url = new URL(buildURI.toString());
 
                 // Create the request to OpenWeatherMap, and open the connection
                 urlConnection = (HttpURLConnection) url.openConnection();
@@ -127,6 +142,8 @@ public class ForecastFragment extends Fragment
                     return null;
                 }
                 forecastJsonStr = buffer.toString();
+
+                Log.v(LOG_TAG,"Forecast parsing string: " + forecastJsonStr);
             } catch (IOException e) {
                 Log.e(LOG_TAG, "Error ", e);
                 // If the code didn't successfully get the weather data, there's no point in attemping
