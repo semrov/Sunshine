@@ -15,5 +15,6 @@ public final class WeatherUrlConstants
     public static final String QUERY_PARAM = "q";
     public static final String FORMAT_PARAM = "mode";
     public static final String UNITS_PARAM = "units";
+    public static final String DAYS_PARAM = "cnt";
 
 }
