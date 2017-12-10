@@ -150,9 +150,11 @@ public class ForecastFragment extends Fragment
             double temp_max = jsonTemp.getDouble(OBJ_MAX_TEMP);
             highAndLow = formatHighLowTemps(temp_max,temp_min);
 
-            gc.add(GregorianCalendar.DATE,i);
             Date date = gc.getTime();
             day = getReadableDateString(date);
+
+            //adds one day
+            gc.add(GregorianCalendar.DATE,1);
 
             weatherForecast[i] = day + " - " + description + " - " + highAndLow;
         }
@@ -261,8 +263,6 @@ public class ForecastFragment extends Fragment
         protected void onPostExecute(String[] forecasts)
         {
             if(forecasts != null) {
-                //List<String> forecast = Arrays.asList(strings);
-                //mForecastAdapter = new ArrayAdapter<String>(getActivity(), R.layout.list_item_forecast, R.id.list_item_forecast_textview, forecast);
                 mForecastAdapter.clear();
                 mForecastAdapter.addAll(forecasts);
                 mForecastAdapter.notifyDataSetChanged();
