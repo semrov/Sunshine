@@ -256,6 +256,18 @@ public class ForecastFragment extends Fragment
             //returns null if getting error on getting or parsing error
             return null;
         }
+
+        @Override
+        protected void onPostExecute(String[] forecasts)
+        {
+            if(forecasts != null) {
+                //List<String> forecast = Arrays.asList(strings);
+                //mForecastAdapter = new ArrayAdapter<String>(getActivity(), R.layout.list_item_forecast, R.id.list_item_forecast_textview, forecast);
+                mForecastAdapter.clear();
+                mForecastAdapter.addAll(forecasts);
+                mForecastAdapter.notifyDataSetChanged();
+            }
+        }
     }
 
 
