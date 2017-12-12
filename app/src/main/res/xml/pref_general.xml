@@ -5,6 +5,15 @@
     android:key="@string/pref_location_key"
     android:defaultValue="@string/pref_location_default"
     android:inputType="text"
-    android:singleLine="true"
-    ></EditTextPreference>
+    android:singleLine="true">
+</EditTextPreference>
+
+    <ListPreference
+        android:title="@string/pref_units_title"
+        android:key="@string/pref_units_key"
+        android:dialogTitle="@string/pref_units_title"
+        android:entries="@array/pref_units_entries"
+        android:entryValues="@array/pref_units_entryValues"
+        android:defaultValue="@string/pref_units_default">
+    </ListPreference>
 </PreferenceScreen>
