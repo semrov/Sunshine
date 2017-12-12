@@ -13,9 +13,11 @@
         <item>Metric</item>
         <item>Imperial</item>
     </string-array>
+    <string name="pref_units_metric" translatable="false">metric</string>
+    <string name="pref_units_imperial" translatable="false">imperial</string>
     <string-array name="pref_units_entryValues" translatable="false">
-        <item>metric</item>
-        <item>imperial</item>
+        <item>@string/pref_units_metric</item>
+        <item>@string/pref_units_imperial</item>
     </string-array>
-    <string name="pref_units_default" translatable="false">metric</string>
+    <string name="pref_units_default" translatable="false">@string/pref_units_metric</string>
 </resources>

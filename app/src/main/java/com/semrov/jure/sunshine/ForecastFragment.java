@@ -123,10 +123,21 @@ public class ForecastFragment extends Fragment
         return dateFormat.format(time);
     }
 
-    private String formatHighLowTemps(double high, double low)
+    private String formatHighLowTemps(double high, double low, String unit)
     {
+        if(unit.equals(getString(R.string.pref_units_imperial)))
+        {
+            high = (high * 1.8) + 32;
+            low = (low * 1.8) + 32;
+        }
+        else if(!unit.equals(getString(R.string.pref_units_metric)))
+        {
+            Log.d(LOG_TAG,"Unit not found: " + unit);
+        }
+
         long roundedHigh = Math.round(high);
         long roundedLow = Math.round(low);
+
         return  roundedLow + "/" + roundedHigh;
     }
 
@@ -153,6 +164,11 @@ public class ForecastFragment extends Fragment
         GregorianCalendar gc = new GregorianCalendar(TimeZone.getDefault());
         String weatherForecast[] = new String[num_days];
 
+        //Data is fetch in celsius by default
+        //We do this to avoid fetching data again
+        //when we store data in database
+        //Values converts to Fahrenheit here if needed
+        String unit = getUnitsPreference();
 
         for (int i = 0; i < num_days; i++)
         {
@@ -171,7 +187,7 @@ public class ForecastFragment extends Fragment
             JSONObject jsonTemp = jsonDay.getJSONObject(OBJ_TEMP);
             double temp_min = jsonTemp.getDouble(OBJ_MIN_TEMP);
             double temp_max = jsonTemp.getDouble(OBJ_MAX_TEMP);
-            highAndLow = formatHighLowTemps(temp_max,temp_min);
+            highAndLow = formatHighLowTemps(temp_max,temp_min,unit);
 
             Date date = gc.getTime();
             day = getReadableDateString(date);
@@ -213,7 +229,7 @@ public class ForecastFragment extends Fragment
                 Uri buildURI = Uri.parse(WeatherUrlConstants.BASE_URL)
                         .buildUpon()
                         .appendQueryParameter(WeatherUrlConstants.QUERY_PARAM,params[0])
-                        .appendQueryParameter(WeatherUrlConstants.UNITS_PARAM,getUnitsPreference())
+                        .appendQueryParameter(WeatherUrlConstants.UNITS_PARAM,getString(R.string.pref_units_default))
                         .appendQueryParameter(WeatherUrlConstants.FORMAT_PARAM,"json")
                         .appendQueryParameter(WeatherUrlConstants.DAYS_PARAM,params[1])
                         .appendQueryParameter(WeatherUrlConstants.APPID_PARAM,WeatherUrlConstants.APPID)
