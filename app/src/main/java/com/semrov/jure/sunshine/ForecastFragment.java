@@ -2,9 +2,11 @@ package com.semrov.jure.sunshine;
 
 import android.app.Fragment;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -99,7 +101,11 @@ public class ForecastFragment extends Fragment
             case R.id.action_refresh:
             {
                 FetchWeatherTask fetchWeatherTask = new FetchWeatherTask();
-                fetchWeatherTask.execute("Logatec","7");
+                SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getActivity());
+                String loc_key = getString(R.string.pref_location_key);
+                String loction = sharedPreferences.getString(loc_key,"");
+                Log.v(LOG_TAG,loction);
+                fetchWeatherTask.execute(loction,"7");
                 return true;
             }
         }
