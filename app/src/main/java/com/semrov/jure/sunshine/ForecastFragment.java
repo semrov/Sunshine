@@ -32,10 +32,8 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Date;
 import java.util.GregorianCalendar;
-import java.util.List;
 import java.util.SimpleTimeZone;
 import java.util.TimeZone;
 
@@ -60,20 +58,7 @@ public class ForecastFragment extends Fragment
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
-
-        // Create some dummy data for the ListView.
-        String[] data = {
-                "Mon 6/23 - Sunny - 31/17",
-                "Tue 6/24 - Foggy - 21/8",
-                "Wed 6/25 - Cloudy - 22/17",
-                "Thurs 6/26 - Rainy - 18/11",
-                "Fri 6/27 - Foggy - 21/10",
-                "Sat 6/28 - TRAPPED IN WEATHERSTATION - 23/18",
-                "Sun 6/29 - Sunny - 20/7"
-        };
-
-        List<String> weekForecast = new ArrayList<>(Arrays.asList(data));
-        mForecastAdapter = new ArrayAdapter<String>(getActivity(),R.layout.list_item_forecast,R.id.list_item_forecast_textview,weekForecast);
+        mForecastAdapter = new ArrayAdapter<String>(getActivity(),R.layout.list_item_forecast,R.id.list_item_forecast_textview,new ArrayList<String>());
         View rootView = inflater.inflate(R.layout.fragment_main,container,false);
         ListView listView = rootView.findViewById(R.id.listview_forecast);
         listView.setAdapter(mForecastAdapter);
@@ -100,16 +85,28 @@ public class ForecastFragment extends Fragment
         {
             case R.id.action_refresh:
             {
-                FetchWeatherTask fetchWeatherTask = new FetchWeatherTask();
-                SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getActivity());
-                String loc_key = getString(R.string.pref_location_key);
-                String loction = sharedPreferences.getString(loc_key,getString(R.string.pref_location_default));
-                Log.v(LOG_TAG,loction);
-                fetchWeatherTask.execute(loction,"7");
+                updateWeather();
                 return true;
             }
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    private void updateWeather()
+    {
+        FetchWeatherTask fetchWeatherTask = new FetchWeatherTask();
+        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getActivity());
+        String loc_key = getString(R.string.pref_location_key);
+        String location = sharedPreferences.getString(loc_key,getString(R.string.pref_location_default));
+        Log.v(LOG_TAG,location);
+        fetchWeatherTask.execute(location,"7");
+    }
+
+    @Override
+    public void onStart()
+    {
+        super.onStart();
+        updateWeather();
     }
 
     //The date/time conversion
