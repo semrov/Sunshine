@@ -20,4 +20,5 @@
         <item>@string/pref_units_imperial</item>
     </string-array>
     <string name="pref_units_default" translatable="false">@string/pref_units_metric</string>
+    <string name="action_map">Map location</string>
 </resources>

@@ -2,6 +2,9 @@ package com.semrov.jure.sunshine;
 
 
 import android.content.Intent;
+import android.content.SharedPreferences;
+import android.net.Uri;
+import android.preference.PreferenceManager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.Menu;
@@ -42,10 +45,28 @@ public class MainActivity extends AppCompatActivity {
                 Intent intent = new Intent(this,SettingsActivity.class);
                 startActivity(intent);
                 return true;
+            case R.id.action_map:
+                openLocationInMap();
+                return true;
             default:
                 break;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    private void openLocationInMap()
+    {
+        SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(this);
+        String location = sp.getString(getString(R.string.pref_location_key),getString(R.string.pref_location_default));
+        Intent intent = new Intent(Intent.ACTION_VIEW);
+        Uri geoLocation = Uri.parse("geo:0,0?").buildUpon()
+                .appendQueryParameter("q",location)
+                .build();
+        intent.setData(geoLocation);
+        if(intent.resolveActivity(getPackageManager())!=null)
+        {
+            startActivity(intent);
+        }
     }
 
 }
