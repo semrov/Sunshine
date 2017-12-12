@@ -103,7 +103,7 @@ public class ForecastFragment extends Fragment
                 FetchWeatherTask fetchWeatherTask = new FetchWeatherTask();
                 SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getActivity());
                 String loc_key = getString(R.string.pref_location_key);
-                String loction = sharedPreferences.getString(loc_key,"");
+                String loction = sharedPreferences.getString(loc_key,getString(R.string.pref_location_default));
                 Log.v(LOG_TAG,loction);
                 fetchWeatherTask.execute(loction,"7");
                 return true;
