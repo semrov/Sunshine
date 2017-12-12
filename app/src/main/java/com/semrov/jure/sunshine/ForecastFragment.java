@@ -102,6 +102,13 @@ public class ForecastFragment extends Fragment
         fetchWeatherTask.execute(location,"7");
     }
 
+    //Returns units selected in preference settings
+    private String getUnitsPreference()
+    {
+        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getActivity());
+        return sharedPreferences.getString(getString(R.string.pref_units_key),getString(R.string.pref_units_default));
+    }
+
     @Override
     public void onStart()
     {
@@ -206,7 +213,7 @@ public class ForecastFragment extends Fragment
                 Uri buildURI = Uri.parse(WeatherUrlConstants.BASE_URL)
                         .buildUpon()
                         .appendQueryParameter(WeatherUrlConstants.QUERY_PARAM,params[0])
-                        .appendQueryParameter(WeatherUrlConstants.UNITS_PARAM,"metric")
+                        .appendQueryParameter(WeatherUrlConstants.UNITS_PARAM,getUnitsPreference())
                         .appendQueryParameter(WeatherUrlConstants.FORMAT_PARAM,"json")
                         .appendQueryParameter(WeatherUrlConstants.DAYS_PARAM,params[1])
                         .appendQueryParameter(WeatherUrlConstants.APPID_PARAM,WeatherUrlConstants.APPID)
