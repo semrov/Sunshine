@@ -112,6 +112,7 @@ public class TestProvider {
         This test checks to make sure that the content provider is registered correctly.
         Students: Uncomment this test to make sure you've correctly registered the WeatherProvider.
      */
+//    @Test
 //    public void testProviderRegistry() {
 //        PackageManager pm = mContext.getPackageManager();
 //
@@ -141,6 +142,7 @@ public class TestProvider {
             Students: Uncomment this test to verify that your implementation of GetType is
             functioning correctly.
          */
+//    @Test
 //    public void testGetType() {
 //        // content://com.example.android.sunshine.app/weather/
 //        String type = mContext.getContentResolver().getType(WeatherEntry.CONTENT_URI);
@@ -177,6 +179,8 @@ public class TestProvider {
         read out the data.  Uncomment this test to see if the basic weather query functionality
         given in the ContentProvider is working correctly.
      */
+
+//    @Test
 //    public void testBasicWeatherQuery() {
 //        // insert our test records into the database
 //        WeatherDbHelper dbHelper = new WeatherDbHelper(mContext);
@@ -211,6 +215,8 @@ public class TestProvider {
         read out the data.  Uncomment this test to see if your location queries are
         performing correctly.
      */
+
+//    @Test
 //    public void testBasicLocationQueries() {
 //        // insert our test records into the database
 //        WeatherDbHelper dbHelper = new WeatherDbHelper(mContext);
@@ -243,6 +249,8 @@ public class TestProvider {
         This test uses the provider to insert and then update the data. Uncomment this test to
         see if your update location is functioning correctly.
      */
+
+//    @Test
 //    public void testUpdateLocation() {
 //        // Create a new map of values, where column names are the keys
 //        ContentValues values = TestUtilities.createNorthPoleLocationValues();
@@ -301,6 +309,8 @@ public class TestProvider {
     // Student: Uncomment this test after you have completed writing the insert functionality
     // in your provider.  It relies on insertions with testInsertReadProvider, so insert and
     // query functionality must also be complete before this test can be used.
+
+//    @Test
 //    public void testInsertReadProvider() {
 //        ContentValues testValues = TestUtilities.createNorthPoleLocationValues();
 //
@@ -407,6 +417,8 @@ public class TestProvider {
     // Student: Uncomment this test after you have completed writing the delete functionality
     // in your provider.  It relies on insertions with testInsertReadProvider, so insert and
     // query functionality must also be complete before this test can be used.
+
+//    @Test
 //    public void testDeleteRecords() {
 //        testInsertReadProvider();
 //
@@ -458,6 +470,8 @@ public class TestProvider {
     // in your provider.  Note that this test will work with the built-in (default) provider
     // implementation, which just inserts records one-at-a-time, so really do implement the
     // BulkInsert ContentProvider function.
+
+//    @Test
 //    public void testBulkInsert() {
 //        // first, let's create a location value
 //        ContentValues testValues = TestUtilities.createNorthPoleLocationValues();

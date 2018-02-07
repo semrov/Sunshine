@@ -23,6 +23,7 @@ public class TestFetchWeatherTask
         This test will only run on API level 11 and higher because of a requirement in the
         content provider.
      */
+//    @Test
 //    @TargetApi(11)
 //    public void testAddLocation() {
 //        // start from a clean state
