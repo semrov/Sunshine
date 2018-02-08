@@ -56,7 +56,7 @@ public class FetchWeatherTask extends AsyncTask<String, Void, String[]> {
             Uri buildURI = Uri.parse(WeatherUrlConstants.BASE_URL)
                     .buildUpon()
                     .appendQueryParameter(WeatherUrlConstants.QUERY_PARAM, params[0])
-                    .appendQueryParameter(WeatherUrlConstants.UNITS_PARAM, forecastFragment.getString(R.string.pref_units_default))
+                    .appendQueryParameter(WeatherUrlConstants.UNITS_PARAM,mContext.getString(R.string.pref_units_metric))
                     .appendQueryParameter(WeatherUrlConstants.FORMAT_PARAM, "json")
                     .appendQueryParameter(WeatherUrlConstants.DAYS_PARAM, params[1])
                     .appendQueryParameter(WeatherUrlConstants.APPID_PARAM, WeatherUrlConstants.APPID)
