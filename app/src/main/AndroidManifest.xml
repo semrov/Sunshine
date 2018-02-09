@@ -29,6 +29,13 @@
         <activity android:name=".SettingsActivity"
             android:label="@string/title_activity_settings"
             android:parentActivityName=".MainActivity"/>
+        
+        <provider
+            android:authorities="com.semrov.jure.android.sunshine"
+            android:name=".data.WeatherProvider">
+        </provider>
+        
     </application>
+    
 
 </manifest>
