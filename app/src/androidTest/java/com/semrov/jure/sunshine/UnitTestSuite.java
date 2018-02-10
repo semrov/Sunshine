@@ -16,5 +16,5 @@ import org.junit.runners.Suite;
 
 // Runs all unit tests.
 @RunWith(Suite.class)
-@Suite.SuiteClasses({TestDb.class, TestProvider.class, TestUriMatcher.class, TestWeatherContract.class})
+@Suite.SuiteClasses({TestDb.class, TestProvider.class, TestUriMatcher.class, TestWeatherContract.class,TestFetchWeatherTask.class})
 public class UnitTestSuite {}
