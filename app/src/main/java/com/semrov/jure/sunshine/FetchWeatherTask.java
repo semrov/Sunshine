@@ -35,13 +35,11 @@ import java.util.Vector;
  */
 public class FetchWeatherTask extends AsyncTask<String, Void, String[]> {
     //private ForecastFragment forecastFragment;
-    private ArrayAdapter<String> mForecastAdapter;
     private final Context mContext;
     private final String LOG_TAG = FetchWeatherTask.class.getName();
 
-    public FetchWeatherTask(Context context, ArrayAdapter<String> forecastAdapter) {
+    public FetchWeatherTask(Context context) {
         mContext = context;
-        mForecastAdapter = forecastAdapter;
     }
 
     @Override
@@ -131,15 +129,6 @@ public class FetchWeatherTask extends AsyncTask<String, Void, String[]> {
         return null;
     }
 
-    @Override
-    protected void onPostExecute(String[] forecasts) {
-        if (forecasts != null) {
-            mForecastAdapter.clear();
-            mForecastAdapter.addAll(forecasts);
-            mForecastAdapter.notifyDataSetChanged();
-        }
-    }
-
     /**
      * Helper method to handle insertion of a new location in the weather database.
      *
@@ -190,6 +179,10 @@ public class FetchWeatherTask extends AsyncTask<String, Void, String[]> {
 
     private String formatHighLowTemps(double high, double low)
     {
+        //Data is fetch in celsius by default
+        //We do this to avoid fetching data again
+        //when we store data in database
+        //Values converts to Fahrenheit here if needed
         String unit = getUnitsPreference();
 
         if(unit.equals(mContext.getString(R.string.pref_units_imperial)))
@@ -289,12 +282,6 @@ public class FetchWeatherTask extends AsyncTask<String, Void, String[]> {
 
             GregorianCalendar gc = new GregorianCalendar(TimeZone.getDefault());
 
-            //Data is fetch in celsius by default
-            //We do this to avoid fetching data again
-            //when we store data in database
-            //Values converts to Fahrenheit here if needed
-            String unit = getUnitsPreference();
-
             for (int i = 0; i < num_days; i++) {
                 double pressure;
                 int humidity;
@@ -353,20 +340,6 @@ public class FetchWeatherTask extends AsyncTask<String, Void, String[]> {
 
                 Log.d(LOG_TAG, "BulkInsert returned " + insertCount);
             }
-
-            // Students: Uncomment the next lines to display what what you stored in the bulkInsert
-
-            //            Cursor cur = mContext.getContentResolver().query(weatherForLocationUri,
-            //                    null, null, null, sortOrder);
-            //
-            //            cVVector = new Vector<ContentValues>(cur.getCount());
-            //            if ( cur.moveToFirst() ) {
-            //                do {
-            //                    ContentValues cv = new ContentValues();
-            //                    DatabaseUtils.cursorRowToContentValues(cur, cv);
-            //                    cVVector.add(cv);
-            //                } while (cur.moveToNext());
-            //            }
 
 
             return convertContentValuesToUXFormat(cv_vector);
