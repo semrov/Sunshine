@@ -12,7 +12,8 @@ import android.view.MenuItem;
 
 public class MainActivity extends AppCompatActivity {
 
-
+    private String mLocation;
+    private final String FORECASTFRAGMENT_TAG = "FORECAST_FRAGMENT_TAG";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -21,9 +22,11 @@ public class MainActivity extends AppCompatActivity {
         if(savedInstanceState == null)
         {
             getFragmentManager().beginTransaction()
-                    .add(R.id.container, new ForecastFragment())
+                    .add(R.id.container, new ForecastFragment(),FORECASTFRAGMENT_TAG)
                     .commit();
         }
+
+        mLocation = Utility.getPreferredLocation(this);
     }
 
     @Override
@@ -52,6 +55,18 @@ public class MainActivity extends AppCompatActivity {
                 break;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        String location = Utility.getPreferredLocation(this);
+        if(!location.equals(mLocation))
+        {
+            ForecastFragment ff = (ForecastFragment) getFragmentManager().findFragmentByTag(FORECASTFRAGMENT_TAG);
+            ff.onLocationChanged();
+            mLocation = location;
+        }
     }
 
     private void openLocationInMap()
