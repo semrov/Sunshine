@@ -1,12 +1,16 @@
 package com.semrov.jure.sunshine;
 
 import android.app.Fragment;
+import android.app.LoaderManager;
+import android.content.CursorLoader;
 import android.content.Intent;
+import android.content.Loader;
 import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
+import android.support.annotation.Nullable;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -14,28 +18,17 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.ListView;
-
 import com.semrov.jure.sunshine.data.WeatherContract;
 
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
-
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.GregorianCalendar;
-import java.util.TimeZone;
 
 /**
  * A placeholder fragment containing a simple view.
  */
-public class ForecastFragment extends Fragment
+public class ForecastFragment extends Fragment implements LoaderManager.LoaderCallbacks<Cursor>
 {
     private static final String LOG_TAG = ForecastFragment.class.getName();
+    private static final int LOADER_ID = 1;
 
     ForecastAdapter mForecastAdapter;
 
@@ -49,20 +42,22 @@ public class ForecastFragment extends Fragment
     }
 
     @Override
+    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+
+        // Prepare the loader.  Either re-connect with an existing one,
+        // or start a new one.
+        getLoaderManager().initLoader(LOADER_ID,null,this);
+    }
+
+    @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
-        String locationSetting = Utility.getPreferredLocation(getActivity());
-
-        // Sort order:  Ascending, by date.
-        String sortOrder = WeatherContract.WeatherEntry.COLUMN_DATE + " ASC";
-
-        Uri weatherForLocationUri = WeatherContract.WeatherEntry.buildWeatherLocationWithStartDate(locationSetting,System.currentTimeMillis());
-        Cursor cursor = getActivity().getContentResolver().query(weatherForLocationUri,
-                null,null,null,sortOrder);
-
-        //mForecastAdapter = //new ForecastAdapter(getActivity(),R.layout.list_item_forecast,R.id.list_item_forecast_textview,new ArrayList<String>());
-        mForecastAdapter = new ForecastAdapter(getActivity(),cursor,0);
+        // Create an empty adapter we will use to display the loaded data.
+        mForecastAdapter = new ForecastAdapter(getActivity(),null,0);
         View rootView = inflater.inflate(R.layout.fragment_main,container,false);
+
+        // Get a reference to the ListView, and attach this adapter to it.
         ListView listView = rootView.findViewById(R.id.listview_forecast);
         listView.setAdapter(mForecastAdapter);
         /*
@@ -97,12 +92,33 @@ public class ForecastFragment extends Fragment
         return super.onOptionsItemSelected(item);
     }
 
+    @Override
+    public Loader onCreateLoader(int id, Bundle args) {
+
+        //gets location string
+        String locationSetting = Utility.getPreferredLocation(getActivity());
+        // Sort order:  Ascending, by date.
+        String sortOrder = WeatherContract.WeatherEntry.COLUMN_DATE + " ASC";
+        Uri weatherForLocationUri = WeatherContract.WeatherEntry.buildWeatherLocationWithStartDate(locationSetting,System.currentTimeMillis());
+
+        return new CursorLoader(getActivity(),weatherForLocationUri,null,null,null,sortOrder);
+    }
+
+    @Override
+    public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
+        mForecastAdapter.swapCursor(data);
+    }
+
+    @Override
+    public void onLoaderReset(Loader<Cursor> loader) {
+        mForecastAdapter.swapCursor(null);
+
+    }
+
     private void updateWeather()
     {
         FetchWeatherTask fetchWeatherTask = new FetchWeatherTask(getActivity());
-        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getActivity());
-        String loc_key = getString(R.string.pref_location_key);
-        String location = sharedPreferences.getString(loc_key,getString(R.string.pref_location_default));
+        String location = Utility.getPreferredLocation(getActivity());
         Log.v(LOG_TAG,location);
         fetchWeatherTask.execute(location,"7");
     }

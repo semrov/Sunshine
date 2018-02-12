@@ -326,8 +326,6 @@ public class FetchWeatherTask extends AsyncTask<String, Void, String[]> {
 
                 cv_vector.add(weatherValues);
 
-                Date date = gc.getTime();
-                //day = getReadableDateString(date);
 
                 //adds one day
                 gc.add(GregorianCalendar.DATE, 1);
