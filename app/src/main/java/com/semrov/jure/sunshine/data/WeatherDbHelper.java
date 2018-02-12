@@ -15,7 +15,7 @@ import com.semrov.jure.sunshine.data.WeatherContract.LocationEntry;
 public class WeatherDbHelper extends SQLiteOpenHelper {
 
     // If you change the database schema, you must increment the database version.
-    private static final int DATABASE_VERSION = 2;
+    private static final int DATABASE_VERSION = 3;
 
     static final String DATABASE_NAME = "weather.db";
 
@@ -71,8 +71,8 @@ public class WeatherDbHelper extends SQLiteOpenHelper {
         //simply discard data and start over
         //It only fires when you change the version number of the database - DATABASE_VERSION
         // It does NOT depend on the version number for your app
-        sqLiteDatabase.execSQL("DROP TABLE IF EXISTS " + LocationEntry.TABLE_NAME);
         sqLiteDatabase.execSQL("DROP TABLE IF EXISTS " + WeatherEntry.TABLE_NAME);
+        sqLiteDatabase.execSQL("DROP TABLE IF EXISTS " + LocationEntry.TABLE_NAME);
         onCreate(sqLiteDatabase);
     }
 

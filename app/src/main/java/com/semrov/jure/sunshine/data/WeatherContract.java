@@ -6,9 +6,9 @@ import android.database.Cursor;
 import android.net.Uri;
 import android.provider.BaseColumns;
 
-import java.sql.Time;
 import java.util.Date;
 import java.util.GregorianCalendar;
+import java.util.TimeZone;
 
 /**
  * Created by Jure on 14.12.2017.
@@ -38,11 +38,15 @@ public class WeatherContract
 
     public static long normalizeDate(long startDate)
     {
-        Date date = new Date(startDate);
         //GregorianCalendar.
-        GregorianCalendar gc = new GregorianCalendar();
-        gc.setTime(date);
-        //gc.setGregorianChange();
+        GregorianCalendar gc = new GregorianCalendar(TimeZone.getDefault());
+        gc.setTimeInMillis(startDate);
+
+        gc.set(GregorianCalendar.HOUR,0);
+        gc.set(GregorianCalendar.MINUTE,0);
+        gc.set(GregorianCalendar.SECOND,0);
+        gc.set(GregorianCalendar.MILLISECOND,0);
+
         return gc.getTimeInMillis();
     }
 
@@ -53,7 +57,8 @@ public class WeatherContract
         time.set(startDate);
         int julianDay = Time.getJulianDay(startDate, time.gmtoff);
         return time.setJulianDay(julianDay);
-    }*/
+    }
+    */
 
     /*Inner class that defines the table contents of the location table*/
     public static class LocationEntry implements BaseColumns
