@@ -156,7 +156,7 @@ public class ForecastFragment extends Fragment implements LoaderManager.LoaderCa
         FetchWeatherTask fetchWeatherTask = new FetchWeatherTask(getActivity());
         String location = Utility.getPreferredLocation(getActivity());
         Log.v(LOG_TAG,location);
-        fetchWeatherTask.execute(location,"7");
+        fetchWeatherTask.execute(location,"15");
     }
 
     public void onLocationChanged()

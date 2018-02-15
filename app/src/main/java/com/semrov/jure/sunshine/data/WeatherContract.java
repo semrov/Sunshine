@@ -38,10 +38,8 @@ public class WeatherContract
 
     public static long normalizeDate(long startDate)
     {
-        //GregorianCalendar.
         GregorianCalendar gc = new GregorianCalendar(TimeZone.getDefault());
         gc.setTimeInMillis(startDate);
-
         gc.set(GregorianCalendar.HOUR,0);
         gc.set(GregorianCalendar.MINUTE,0);
         gc.set(GregorianCalendar.SECOND,0);
