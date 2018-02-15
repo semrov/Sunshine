@@ -1,7 +1,6 @@
 package com.semrov.jure.sunshine;
 
 import android.content.Context;
-import android.content.CursorLoader;
 import android.database.Cursor;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -9,8 +8,6 @@ import android.view.ViewGroup;
 import android.widget.CursorAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
-
-import com.semrov.jure.sunshine.data.WeatherContract;
 
 
 /**
@@ -66,16 +63,5 @@ public class ForecastAdapter extends CursorAdapter
         lowView.setText(Utility.formatTemperature(low, isMetric));
 
     }
-
-    /**
-     * Prepare the weather high/lows for presentation.
-     */
-    private String formatHighLows(Context c, double high, double low) {
-        boolean isMetric = Utility.isMetric(c);
-        String highLowStr = Utility.formatTemperature(high, isMetric) + "/" + Utility.formatTemperature(low, isMetric);
-        return highLowStr;
-    }
-
-
 
 }
