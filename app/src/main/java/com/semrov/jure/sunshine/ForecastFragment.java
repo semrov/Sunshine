@@ -20,6 +20,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ListView;
+import android.widget.Toast;
+
 import com.semrov.jure.sunshine.data.WeatherContract;
 
 
@@ -97,6 +99,8 @@ public class ForecastFragment extends Fragment implements LoaderManager.LoaderCa
                 Cursor cursor = (Cursor) adapterView.getItemAtPosition(i);
                 if (cursor != null)
                 {
+                    int weather_id = cursor.getInt(COL_WEATHER_CONDITION_ID);
+                    Toast.makeText(getActivity(),"Weather condition id:" + weather_id,Toast.LENGTH_LONG).show();
                     String locationSetting = Utility.getPreferredLocation(getActivity());
                     Intent intent = new Intent(getActivity(),DetailActivity.class)
                             .setData(WeatherContract.WeatherEntry.buildWeatherLocationWithDate(locationSetting,

@@ -8,6 +8,7 @@ import android.view.ViewGroup;
 import android.widget.CursorAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 
 /**
@@ -70,12 +71,19 @@ public class ForecastAdapter extends CursorAdapter
     @Override
     public void bindView(View view, Context context, Cursor cursor) {
 
-        // Read weather icon ID from cursor
-        int weatherId = cursor.getInt(ForecastFragment.COL_WEATHER_ID);
-
         ViewHolder viewHolder = (ViewHolder) view.getTag();
-        // Use placeholder image for now
-        viewHolder.iconView.setImageResource(R.mipmap.ic_launcher);
+
+        // Read weather icon ID from cursor
+        int weatherId = cursor.getInt(ForecastFragment.COL_WEATHER_CONDITION_ID);
+        switch (getItemViewType(cursor.getPosition()))
+        {
+            case VIEW_TYPE_TODAY :
+                viewHolder.iconView.setImageResource(Utility.getArtResourceForWeatherCondition(weatherId));
+                break;
+            case VIEW_TYPE_FUTURE_DAY:
+                viewHolder.iconView.setImageResource(Utility.getIconResourceForWeatherCondition(weatherId));
+                break;
+        }
 
         // Reads date from cursor
         long date_ms = cursor.getLong(ForecastFragment.COL_WEATHER_DATE);

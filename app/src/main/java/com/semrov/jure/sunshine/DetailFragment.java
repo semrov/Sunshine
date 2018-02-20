@@ -20,6 +20,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.semrov.jure.sunshine.data.WeatherContract;
 
@@ -66,11 +67,11 @@ public class DetailFragment extends Fragment implements LoaderManager.LoaderCall
 
     // these constants correspond to the projection defined above, and must change if the
     // projection changes
-    private static final int COL_WEATHER_ID = 0;
-    private static final int COL_WEATHER_DATE = 1;
-    private static final int COL_WEATHER_DESC = 2;
-    private static final int COL_WEATHER_MAX_TEMP = 3;
-    private static final int COL_WEATHER_MIN_TEMP = 4;
+    public static final int COL_WEATHER_ID = 0;
+    public static final int COL_WEATHER_DATE = 1;
+    public static final int COL_WEATHER_DESC = 2;
+    public static final int COL_WEATHER_MAX_TEMP = 3;
+    public static final int COL_WEATHER_MIN_TEMP = 4;
     public static final int COL_WEATHER_HUMIDITY = 5;
     public static final int COL_WEATHER_PRESSURE = 6;
     public static final int COL_WEATHER_WIND_SPEED = 7;
@@ -149,7 +150,8 @@ public class DetailFragment extends Fragment implements LoaderManager.LoaderCall
             return;
         }
 
-        int weather_id = data.getInt(COL_WEATHER_ID);
+        int weather_id = data.getInt(COL_WEATHER_CONDITION_ID);
+
 
         long date = data.getLong(COL_WEATHER_DATE);
         String dateString = Utility.formatDate(date);
@@ -158,7 +160,7 @@ public class DetailFragment extends Fragment implements LoaderManager.LoaderCall
         mFriendlyDateView.setText(friendlyDateText);
         mDateView.setText(dateText);
 
-        mIconView.setImageResource(R.mipmap.ic_launcher);
+        mIconView.setImageResource(Utility.getArtResourceForWeatherCondition(weather_id));
 
         String weatherDesc = data.getString(COL_WEATHER_DESC);
         mDescriptionView.setText(weatherDesc);
