@@ -2,6 +2,7 @@ package com.semrov.jure.sunshine;
 
 import android.app.Fragment;
 import android.app.LoaderManager;
+import android.content.Context;
 import android.content.CursorLoader;
 import android.content.Intent;
 import android.content.Loader;
@@ -64,6 +65,20 @@ public class ForecastFragment extends Fragment implements LoaderManager.LoaderCa
 
     ForecastAdapter mForecastAdapter;
 
+    /**
+     * A callback interface that all activities containing this fragment must
+     * implement. This mechanism allows activities to be notified of item
+     * selections.
+     */
+    public interface Callback {
+        /**
+         * DetailFragmentCallback for when an item has been selected.
+         */
+        public void onItemSelected(Uri dateUri);
+    }
+
+    Callback mCallback;
+
     public ForecastFragment(){ }
 
     @Override
@@ -80,6 +95,18 @@ public class ForecastFragment extends Fragment implements LoaderManager.LoaderCa
         // Prepare the loader.  Either re-connect with an existing one,
         // or start a new one.
         getLoaderManager().initLoader(LOADER_ID,null,this);
+    }
+
+    @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+        try {
+            mCallback = (Callback) context;
+        }catch (ClassCastException e)
+        {
+            Log.e(LOG_TAG,context.getClass().getCanonicalName() + "does not implement interface " + Callback.class.getSimpleName(),e);
+            throw e;
+        }
     }
 
     @Override
@@ -102,10 +129,14 @@ public class ForecastFragment extends Fragment implements LoaderManager.LoaderCa
                     int weather_id = cursor.getInt(COL_WEATHER_CONDITION_ID);
                     Toast.makeText(getActivity(),"Weather condition id:" + weather_id,Toast.LENGTH_LONG).show();
                     String locationSetting = Utility.getPreferredLocation(getActivity());
+                    /*
                     Intent intent = new Intent(getActivity(),DetailActivity.class)
                             .setData(WeatherContract.WeatherEntry.buildWeatherLocationWithDate(locationSetting,
                                     cursor.getLong(COL_WEATHER_DATE)));
                     startActivity(intent);
+                    */
+                    ((Callback)getActivity()).onItemSelected(WeatherContract.WeatherEntry.buildWeatherLocationWithDate(
+                            locationSetting,cursor.getLong(COL_WEATHER_DATE)));
                 }
 
             }

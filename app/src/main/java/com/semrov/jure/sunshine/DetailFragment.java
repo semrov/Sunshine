@@ -32,8 +32,10 @@ public class DetailFragment extends Fragment implements LoaderManager.LoaderCall
     private static final int LOADER_ID = 0;
     private static final String LOG_TAG = DetailFragment.class.getSimpleName();
     private static final String FORECAST_SHARE_TAG = "#SunshineApp";
+    static final String DETAIL_URI = "URI";
     private String mforecastString;
     private ShareActionProvider mShareActionProvider;
+    private Uri mUri;
 
     private ImageView mIconView;
     private TextView mFriendlyDateView;
@@ -92,6 +94,13 @@ public class DetailFragment extends Fragment implements LoaderManager.LoaderCall
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+
+        Bundle args = getArguments();
+        if (args != null)
+        {
+            mUri = args.getParcelable(DETAIL_URI);
+        }
+
         View rootView = inflater.inflate(R.layout.fragment_detail, container, false);
         mIconView = rootView.findViewById(R.id.detail_icon);
         mDateView = rootView.findViewById(R.id.detail_date_textview);
@@ -133,14 +142,23 @@ public class DetailFragment extends Fragment implements LoaderManager.LoaderCall
         return shareIntent;
     }
 
+    void onLocationChanged(String location)
+    {
+        // replace the uri, since the location has changed
+        Uri uri = mUri;
+        if(uri != null)
+        {
+            long date = WeatherContract.WeatherEntry.getDateFromUri(uri);
+            Uri updatedUri = WeatherContract.WeatherEntry.buildWeatherLocationWithDate(location,date);
+            mUri = updatedUri;
+            getLoaderManager().restartLoader(LOADER_ID,null,this);
+        }
+    }
+
     @Override
     public Loader<Cursor> onCreateLoader(int id, Bundle args) {
-        Intent i = getActivity().getIntent();
-
-        if (i != null) {
-            Uri uri = i.getData();
-            if(uri != null)
-                return new CursorLoader(getActivity(), uri, FORECAST_COLUMNS, null, null, null);
+        if (mUri != null) {
+            return new CursorLoader(getActivity(), mUri, FORECAST_COLUMNS, null, null, null);
         }
         return null;
     }

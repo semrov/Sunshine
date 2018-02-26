@@ -14,10 +14,19 @@ public class DetailActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_detail);
+
+        // Create the detail fragment and add it to the activity
+        // using a fragment transaction.
+        Bundle args = new Bundle();
+        args.putParcelable(DetailFragment.DETAIL_URI,getIntent().getData());
+
+        DetailFragment df = new DetailFragment();
+        df.setArguments(args);
+
         if(savedInstanceState == null)
         {
             getFragmentManager().beginTransaction()
-                    .add(R.id.weather_detail_container,new DetailFragment())
+                    .add(R.id.weather_detail_container,df)
                     .commit();
         }
     }
