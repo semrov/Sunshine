@@ -13,20 +13,35 @@ import android.view.MenuItem;
 public class MainActivity extends AppCompatActivity {
 
     private String mLocation;
-    private final String FORECASTFRAGMENT_TAG = "FORECAST_FRAGMENT_TAG";
+    private static final String DETAILFRAGMENT_TAG = "DFTAG";
+    private boolean mTwoPane;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        if(savedInstanceState == null)
-        {
-            getFragmentManager().beginTransaction()
-                    .add(R.id.container, new ForecastFragment(),FORECASTFRAGMENT_TAG)
-                    .commit();
-        }
-
         mLocation = Utility.getPreferredLocation(this);
+
+        if (findViewById(R.id.weather_detail_container) != null)
+        {
+            // The detail container view will be present only in the large-screen layouts
+            // (res/layout-sw600dp). If this view is present, then the activity should be
+            // in two-pane mode.
+            mTwoPane = true;
+            // In two-pane mode, show the detail view in this activity by
+            // adding or replacing the detail fragment using a
+            // fragment transaction.
+            if(savedInstanceState == null)
+            {
+                getFragmentManager().beginTransaction()
+                        .replace(R.id.weather_detail_container, new DetailFragment())
+                        .commit();
+            }
+        }
+        else
+        {
+            mTwoPane = false;
+        }
     }
 
     @Override
@@ -63,7 +78,7 @@ public class MainActivity extends AppCompatActivity {
         String location = Utility.getPreferredLocation(this);
         if(!location.equals(mLocation))
         {
-            ForecastFragment ff = (ForecastFragment) getFragmentManager().findFragmentByTag(FORECASTFRAGMENT_TAG);
+            ForecastFragment ff = (ForecastFragment) getFragmentManager().findFragmentById(R.id.fragment_forecast);
             ff.onLocationChanged();
             mLocation = location;
         }

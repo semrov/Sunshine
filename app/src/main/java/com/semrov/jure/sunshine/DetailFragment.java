@@ -139,7 +139,8 @@ public class DetailFragment extends Fragment implements LoaderManager.LoaderCall
 
         if (i != null) {
             Uri uri = i.getData();
-            return new CursorLoader(getActivity(), uri, FORECAST_COLUMNS, null, null, null);
+            if(uri != null)
+                return new CursorLoader(getActivity(), uri, FORECAST_COLUMNS, null, null, null);
         }
         return null;
     }
