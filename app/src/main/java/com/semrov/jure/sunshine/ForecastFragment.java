@@ -33,6 +33,12 @@ public class ForecastFragment extends Fragment implements LoaderManager.LoaderCa
 {
     private static final String LOG_TAG = ForecastFragment.class.getName();
     private static final int LOADER_ID = 1;
+    private static final String LAST_SELECTED_POS = "LAST_POS";
+    private int mPosition = ListView.INVALID_POSITION;
+    private ListView mListView;
+    private ForecastAdapter mForecastAdapter;
+
+
     private static final String[] FORECAST_COLUMNS = {
             // In this case the id needs to be fully qualified with a table name, since
             // the content provider joins the location & weather tables in the background
@@ -63,7 +69,6 @@ public class ForecastFragment extends Fragment implements LoaderManager.LoaderCa
     static final int COL_COORD_LAT = 7;
     static final int COL_COORD_LONG = 8;
 
-    ForecastAdapter mForecastAdapter;
 
     /**
      * A callback interface that all activities containing this fragment must
@@ -110,39 +115,58 @@ public class ForecastFragment extends Fragment implements LoaderManager.LoaderCa
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, final Bundle savedInstanceState) {
 
         // Create an empty adapter we will use to display the loaded data.
+        // The ForecastAdapter will take data from a source and
+        // use it to populate the ListView it's attached to.
         mForecastAdapter = new ForecastAdapter(getActivity(),null,0);
         View rootView = inflater.inflate(R.layout.fragment_main,container,false);
 
         // Get a reference to the ListView, and attach this adapter to it.
-        ListView listView = rootView.findViewById(R.id.listview_forecast);
-        listView.setAdapter(mForecastAdapter);
+        mListView = rootView.findViewById(R.id.listview_forecast);
+        mListView.setAdapter(mForecastAdapter);
 
-        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+        mListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
                 Cursor cursor = (Cursor) adapterView.getItemAtPosition(i);
                 if (cursor != null)
                 {
-                    int weather_id = cursor.getInt(COL_WEATHER_CONDITION_ID);
-                    Toast.makeText(getActivity(),"Weather condition id:" + weather_id,Toast.LENGTH_LONG).show();
                     String locationSetting = Utility.getPreferredLocation(getActivity());
-                    /*
-                    Intent intent = new Intent(getActivity(),DetailActivity.class)
-                            .setData(WeatherContract.WeatherEntry.buildWeatherLocationWithDate(locationSetting,
-                                    cursor.getLong(COL_WEATHER_DATE)));
-                    startActivity(intent);
-                    */
                     ((Callback)getActivity()).onItemSelected(WeatherContract.WeatherEntry.buildWeatherLocationWithDate(
                             locationSetting,cursor.getLong(COL_WEATHER_DATE)));
+                    mPosition = i;
                 }
 
             }
         });
 
+        // If there's instance state, mine it for useful information.
+        // The end-goal here is that the user never knows that turning their device sideways
+        // does crazy lifecycle related things.  It should feel like some stuff stretched out,
+        // or magically appeared to take advantage of room, but data or place in the app was never
+        // actually *lost*.
+        if(savedInstanceState != null && savedInstanceState.containsKey(LAST_SELECTED_POS))
+        {
+            // The listview probably hasn't even been populated yet.  Actually perform the
+            // swapout in onLoadFinished
+            mPosition = savedInstanceState.getInt(LAST_SELECTED_POS);
+        }
+
         return rootView;
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        // When tablets rotate, the currently selected list item needs to be saved.
+        // When no item is selected, mPosition will be set to Listview.INVALID_POSITION,
+        // so check for that before storing.
+        if (mPosition != ListView.INVALID_POSITION)
+        {
+            outState.putInt(LAST_SELECTED_POS,mPosition);
+        }
     }
 
     @Override
@@ -178,6 +202,10 @@ public class ForecastFragment extends Fragment implements LoaderManager.LoaderCa
     @Override
     public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
         mForecastAdapter.swapCursor(data);
+        // If we don't need to restart the loader, and there's a desired position to restore
+       // to, do so now.
+        if(mPosition != ListView.INVALID_POSITION)
+            mListView.smoothScrollToPosition(mPosition);
     }
 
     @Override
