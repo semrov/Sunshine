@@ -1,16 +1,12 @@
-<?xml version="1.0" encoding="utf-8"?>
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent" android:layout_height="match_parent"
-    android:paddingEnd="16dp"
-    android:paddingStart="16dp"
-    android:paddingTop="16dp"
-    android:paddingBottom="16dp">
-
-    <ListView
-        style="@style/ForecastListStyle"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:id="@+id/listview_forecast">
-    </ListView>
-
+xmlns:tools="http://schemas.android.com/tools"
+android:layout_width="match_parent"
+android:layout_height="match_parent"
+tools:context="ForecastFragment">
+<ListView
+    style="@style/ForecastListStyle"
+    android:id="@+id/listview_forecast"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:divider="@null" />
 </FrameLayout>
