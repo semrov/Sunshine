@@ -37,6 +37,7 @@ public class ForecastFragment extends Fragment implements LoaderManager.LoaderCa
     private int mPosition = ListView.INVALID_POSITION;
     private ListView mListView;
     private ForecastAdapter mForecastAdapter;
+    private boolean mUseTodayLayout = false;
 
 
     private static final String[] FORECAST_COLUMNS = {
@@ -154,6 +155,8 @@ public class ForecastFragment extends Fragment implements LoaderManager.LoaderCa
             mPosition = savedInstanceState.getInt(LAST_SELECTED_POS);
         }
 
+        mForecastAdapter.setUseTodayLayout(mUseTodayLayout);
+
         return rootView;
     }
 
@@ -226,6 +229,14 @@ public class ForecastFragment extends Fragment implements LoaderManager.LoaderCa
     {
         updateWeather();
         getLoaderManager().restartLoader(LOADER_ID,null,this);
+    }
+
+    public void setUseTodayLayout(boolean useTodayLayout) {
+        mUseTodayLayout = useTodayLayout;
+        if(mForecastAdapter != null)
+        {
+            mForecastAdapter.setUseTodayLayout(useTodayLayout);
+        }
     }
 
 }
