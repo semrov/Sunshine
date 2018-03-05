@@ -1,5 +1,6 @@
 package com.semrov.jure.sunshine;
 
+import android.Manifest;
 import android.app.Fragment;
 import android.app.LoaderManager;
 import android.content.Context;
@@ -7,11 +8,15 @@ import android.content.CursorLoader;
 import android.content.Intent;
 import android.content.Loader;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -38,6 +43,8 @@ public class ForecastFragment extends Fragment implements LoaderManager.LoaderCa
     private ListView mListView;
     private ForecastAdapter mForecastAdapter;
     private boolean mUseTodayLayout = false;
+    private boolean mPermissionAccessNetworkState = true;
+    private boolean mPermissionInternet = true;
 
 
     private static final String[] FORECAST_COLUMNS = {
@@ -69,6 +76,11 @@ public class ForecastFragment extends Fragment implements LoaderManager.LoaderCa
     static final int COL_WEATHER_CONDITION_ID = 6;
     static final int COL_COORD_LAT = 7;
     static final int COL_COORD_LONG = 8;
+
+
+    //Request codes for permissions
+    private static final int PERMISSION_ACCESS_NETWORK_STATE = 0;
+    private static final int PERMISSION_INTERNET = 1;
 
 
     /**
@@ -113,6 +125,9 @@ public class ForecastFragment extends Fragment implements LoaderManager.LoaderCa
             Log.e(LOG_TAG,context.getClass().getCanonicalName() + "does not implement interface " + Callback.class.getSimpleName(),e);
             throw e;
         }
+
+        ask_permission(Manifest.permission.ACCESS_NETWORK_STATE,PERMISSION_ACCESS_NETWORK_STATE);
+        ask_permission(Manifest.permission.INTERNET,PERMISSION_INTERNET);
     }
 
     @Override
@@ -219,10 +234,50 @@ public class ForecastFragment extends Fragment implements LoaderManager.LoaderCa
 
     private void updateWeather()
     {
+        if (!mPermissionInternet || !mPermissionAccessNetworkState)
+        {
+            Toast.makeText(getActivity(),"Please allow access to internet!",Toast.LENGTH_LONG).show();
+            return;
+        }
         FetchWeatherTask fetchWeatherTask = new FetchWeatherTask(getActivity());
         String location = Utility.getPreferredLocation(getActivity());
-        Log.v(LOG_TAG,location);
-        fetchWeatherTask.execute(location,"15");
+        Log.v(LOG_TAG, location);
+        fetchWeatherTask.execute(location, "15");
+    }
+
+    private void ask_permission(String permission, int requestCode)
+    {
+        if (ContextCompat.checkSelfPermission(getActivity(),permission) != PackageManager.PERMISSION_GRANTED)
+        {
+            // We don't have requested permission
+            // Request for permission
+            ActivityCompat.requestPermissions(getActivity(),new String[] {permission}, requestCode);
+        }
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        switch (requestCode)
+        {
+            case PERMISSION_ACCESS_NETWORK_STATE:
+                if(grantResults.length>0 && grantResults[0] != PackageManager.PERMISSION_GRANTED)
+                {
+                    Toast.makeText(getActivity(),"Access network state permission is required!", Toast.LENGTH_LONG).show();
+                    mPermissionAccessNetworkState = false;
+                }
+                else
+                    mPermissionAccessNetworkState = true;
+                break;
+            case PERMISSION_INTERNET:
+                if(grantResults.length>0 && grantResults[0] != PackageManager.PERMISSION_GRANTED)
+                {
+                    Toast.makeText(getActivity(),"Internet permission is required!", Toast.LENGTH_LONG).show();
+                    mPermissionInternet = false;
+                }
+                else
+                    mPermissionInternet = true;
+                break;
+        }
     }
 
     public void onLocationChanged()
